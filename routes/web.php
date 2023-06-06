@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\StudentClassController;
 use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,3 +40,9 @@ Route::get('/class/{id}/edit', [StudentClassController::class, 'edit'])->name('c
 Route::put('/class/{id}/update', [StudentClassController::class, 'update'])->name('class.update');
 Route::delete('/class/{id}/delete', [StudentClassController::class, 'destroy'])->name('class.delete');
 
+/**
+ * User Route
+ */
+Route::get('/user', [UserController::class, 'index'])->name('user.index');
+Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
