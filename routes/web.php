@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\SchoolYearController;
 use App\Http\Controllers\Admin\StudentClassController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\UserController;
@@ -20,29 +22,59 @@ Route::get('/', function () {
     return view('admin.index');
 });
 
-/**
- * Subject Route
- */
-Route::get('/subject', [SubjectController::class, 'index'])->name('subject.index');
-Route::get('/subject/create', [SubjectController::class, 'create'])->name('subject.create');
-Route::post('subject/store', [SubjectController::class, 'store'])->name('subject.store');
-Route::get('/subject/{id}/edit', [SubjectController::class, 'edit'])->name('subject.edit');
-Route::put('/subject/{id}/update', [SubjectController::class, 'update'])->name('subject.update');
-Route::delete('/subject/{id}/delete', [SubjectController::class, 'destroy'])->name('subject.delete');
+Route::get('/admin/login', [AuthController::class, 'index'])->name('login');
+Route::post('/login-process', [AuthController::class, 'loginHandler'])->name('adminLogin.process');
 
-/**
- * Class Route
- */
-Route::get('/class', [StudentClassController::class, 'index'])->name('class.index');
-Route::get('/class/create', [StudentClassController::class, 'create'])->name('class.create');
-Route::post('/class/store', [StudentClassController::class, 'store'])->name('class.store');
-Route::get('/class/{id}/edit', [StudentClassController::class, 'edit'])->name('class.edit');
-Route::put('/class/{id}/update', [StudentClassController::class, 'update'])->name('class.update');
-Route::delete('/class/{id}/delete', [StudentClassController::class, 'destroy'])->name('class.delete');
+Route::prefix('admin')->middleware('auth')->group(function() {
+    
+    Route::get('/logout', [AuthController::class, 'logoutHandler'])->name('admin.logout');
 
-/**
- * User Route
- */
-Route::get('/user', [UserController::class, 'index'])->name('user.index');
-Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
-Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
+    /**
+     * Subject Route
+     */
+    Route::controller(SubjectController::class)->name('subject.')->group(function() {
+        Route::get('/subject', 'index')->name('index');
+        Route::get('/subject/create', 'create')->name('create');
+        Route::post('subject/store', 'store')->name('store');
+        Route::get('/subject/{id}/edit', 'edit')->name('edit');
+        Route::put('/subject/{id}/update', 'update')->name('update');
+        Route::delete('/subject/{id}/delete', 'destroy')->name('delete');
+    });
+
+    /**
+     * Class Route
+     */
+    Route::controller(StudentClassController::class)->name('class.')->group(function() {
+        Route::get('/class', 'index')->name('index');
+        Route::get('/class/create', 'create')->name('create');
+        Route::post('/class/store', 'store')->name('store');
+        Route::get('/class/{id}/edit', 'edit')->name('edit');
+        Route::put('/class/{id}/update', 'update')->name('update');
+        Route::delete('/class/{id}/delete', 'destroy')->name('delete');
+    });
+
+    /**
+     * User Route
+     */
+    Route::controller(UserController::class)->name('user.')->group(function() {
+        Route::get('/user', 'index')->name('index');
+        Route::get('/user/create', 'create')->name('create');
+        Route::post('/user/store', 'store')->name('store');
+        Route::get('/user/{id}/edit', 'edit')->name('edit');
+        Route::put('/user/{id}/update', 'update')->name('update');
+        Route::delete('/user/{id}/delete', 'destroy')->name('delete');
+    });
+
+    /**
+     * School Year Route
+     */
+    Route::controller(SchooYearController::class)->name('sy.')->group(function() {
+        Route::get('/sy', 'index')->name('index');
+        Route::get('/sy/create', 'create')->name('create');
+        Route::post('/sy/store', 'store')->name('store');
+        Route::get('/sy/{id}/edit', 'edit')->name('edit');
+        Route::put('/sy/{id}/update', 'update')->name('update');
+        Route::delete('/sy/{id}/delete', 'destroy')->name('delete');
+    });
+
+});

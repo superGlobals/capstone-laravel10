@@ -1,11 +1,11 @@
 @extends('layouts.main')
 @section('content')
     <div class="pagetitle">
-        <h1>Users</h1>
+        <h1>Scool Year</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="">Home</a></li>
-                <li class="breadcrumb-item active">Users</li>
+                <li class="breadcrumb-item active">School Year</li>
             </ol>
         </nav>
     </div>
@@ -15,8 +15,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header border-0">
-                        <a href="{{ route('user.create') }}" class="btn btn-primary float-end">New User</a>
-                        <h5 class="card-header-title">User List</h5>
+                        <a href="{{ route('sy.create') }}" class="btn btn-primary float-end">New School Year</a>
+                        <h5 class="card-header-title">School Year List</h5>
 
                     </div>
                     <div class="card-body">
@@ -24,9 +24,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Role</th>
+                                    <th scope="col">School Year</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -34,28 +32,24 @@
                                 @php
                                     $count = 1;
                                 @endphp
-                                @forelse ($users as $user)
+                                @forelse ($sys as $sy)
                                     <tr>
                                         <td>{{ $count++ }}</td>
-                                        <td>{{ ucwords($user->name) }}</td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>{{ $user->role }}</td>
+                                        <td>{{ $sy->school_year }}</td>
                                         <td>
                                             <div style="display: flex; gap: 10px;">
-                                                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success">Edit</a>
-                                                <form action="{{ route('user.delete', $user->id) }}" method="POST">
+                                                <a href="{{ route('sy.edit', $sy->id) }}" class="btn btn-success">Edit</a>
+                                                <form action="{{ route('sy.delete', $sy->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" onclick="deleteConfirm(event)" class="btn btn-danger">Delete</button>
                                                 </form>
                                             </div>
-                                            
                                         </td>
                                     </tr>
                                 @empty
                                     
                                 @endforelse
-                                    
                             </tbody>
                         </table>
                     </div>
