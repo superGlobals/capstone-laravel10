@@ -22,12 +22,14 @@ class StudentClassController extends Controller
 
     public function store(ClassValidationRequest $request)
     {
-        $class = new StudentClass();
+        // $class = new StudentClass();
 
-        $class->course = $request->course;
-        $class->year = $request->year;
-        $class->section = $request->section;
-        $class->save();
+        StudentClass::create($request->validated());
+
+        // $class->course = $request->course;
+        // $class->year = $request->year;
+        // $class->section = $request->section;
+        // $class->save();
 
         return redirect()->route('class.create')->with('message', 'Class added succesfully');
     }
@@ -54,6 +56,18 @@ class StudentClassController extends Controller
     public function destroy($id)
     {
         StudentClass::findOrFail($id)->delete();
+
+        return redirect()->route('class.index')->with('message', 'Class deleted succesfully');
+    }
+
+    public function destroyMultiple(Request $request)
+    {
+        $classRecord = $request->input('deleteClasses', []);
+
+        if(!empty($classRecord)) {
+
+            StudentClass::whereIn('id', $classRecord)->delete();
+        }
 
         return redirect()->route('class.index')->with('message', 'Class deleted succesfully');
     }

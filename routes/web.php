@@ -1,11 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TeacherStudentAuth;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Teacher\QuizController;
+use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\HomePageController;
+use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Admin\SchoolYearController;
 use App\Http\Controllers\Admin\StudentClassController;
-use App\Http\Controllers\Admin\SubjectController;
-use App\Http\Controllers\Admin\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Teacher\AuthController as TeacherAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,44 +24,54 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('admin.index');
-});
+    return view('welcome');
+})->name('homepage');
 
-Route::get('/admin/login', [AuthController::class, 'index'])->name('login');
-Route::post('/login-process', [AuthController::class, 'loginHandler'])->name('adminLogin.process');
 
-Route::prefix('admin')->middleware('auth')->group(function() {
-    
-    Route::get('/logout', [AuthController::class, 'logoutHandler'])->name('admin.logout');
+
+// Route::middleware('guest')->controller(AuthController::class)->group(function() {
+//     Route::get('/admin/login', 'index')->name('login');
+//     Route::post('/login-process', 'loginHandler')->name('adminLogin.process');
+// });
+
+/**
+ * Authenticated Admin Route
+ */
+Route::prefix('admin')->middleware('role:admin')->group(function () {
+
+    Route::get('/', [HomePageController::class, 'index'])->name('admin.index');
+
+    // Route::post('/logout', [AuthController::class, 'logoutHandler'])->name('admin.logout');
 
     /**
      * Subject Route
      */
-    Route::controller(SubjectController::class)->name('subject.')->group(function() {
-        Route::get('/subject', 'index')->name('index');
-        Route::get('/subject/create', 'create')->name('create');
-        Route::post('subject/store', 'store')->name('store');
-        Route::get('/subject/{id}/edit', 'edit')->name('edit');
-        Route::put('/subject/{id}/update', 'update')->name('update');
-        Route::delete('/subject/{id}/delete', 'destroy')->name('delete');
+    Route::controller(SubjectController::class)->prefix('subject')->name('subject.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}/update', 'update')->name('update');
+        Route::post('/{id}/delete', 'destroy')->name('delete');
     });
 
     /**
      * Class Route
      */
-    Route::controller(StudentClassController::class)->name('class.')->group(function() {
-        Route::get('/class', 'index')->name('index');
-        Route::get('/class/create', 'create')->name('create');
-        Route::post('/class/store', 'store')->name('store');
-        Route::get('/class/{id}/edit', 'edit')->name('edit');
-        Route::put('/class/{id}/update', 'update')->name('update');
-        Route::delete('/class/{id}/delete', 'destroy')->name('delete');
+    Route::controller(StudentClassController::class)->prefix('class')->name('class.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}/update', 'update')->name('update');
+        Route::delete('/{id}/delete', 'destroy')->name('delete');
+        Route::delete('/delete', 'destroyMultiple')->name('deleteSelectedClass');
     });
 
     /**
      * User Route
      */
-    Route::controller(UserController::class)->name('user.')->group(function() {
+    Route::controller(UserController::class)->name('user.')->group(function () {
         Route::get('/user', 'index')->name('index');
         Route::get('/user/create', 'create')->name('create');
         Route::post('/user/store', 'store')->name('store');
@@ -68,7 +83,7 @@ Route::prefix('admin')->middleware('auth')->group(function() {
     /**
      * School Year Route
      */
-    Route::controller(SchooYearController::class)->name('sy.')->group(function() {
+    Route::controller(SchoolYearController::class)->name('sy.')->group(function () {
         Route::get('/sy', 'index')->name('index');
         Route::get('/sy/create', 'create')->name('create');
         Route::post('/sy/store', 'store')->name('store');
@@ -76,5 +91,46 @@ Route::prefix('admin')->middleware('auth')->group(function() {
         Route::put('/sy/{id}/update', 'update')->name('update');
         Route::delete('/sy/{id}/delete', 'destroy')->name('delete');
     });
+});
 
+
+Route::middleware('guest')->group(function () {
+    Route::view('/login', 'login')->name('login');
+    Route::view('/register', 'register')->name('register');
+
+
+    Route::view('/register', 'teacher.register')->name('teacher.register');
+});
+
+/**
+ * Teacher Registration Route
+ */
+Route::post('/teacher/store', [TeacherController::class, 'storeTeacher'])->name('teacher.storeTeacher');
+
+
+/**
+ * Admin, Teacher and Student Login/Logout Route
+ */
+Route::post('/login-process', [AuthController::class, 'loginHandler'])->name('teacher-student-auth');
+Route::post('/logout-process', [AuthController::class, 'logoutHandler'])->name('logout');
+
+
+/**
+ * Authenticated Teacher Route
+ */
+Route::prefix('teacher')->middleware('role:teacher')->group(function () {
+    Route::controller(TeacherController::class)->name('teacher.')->group(function () {
+        Route::get('/dashboard', 'index')->name('dashboard');
+        Route::post('/store-class', 'storeClass')->name('storeClass');
+        Route::get('/my-students/{unique_id}', 'showMyStudents')->name('my-students');
+    });
+
+    Route::controller(QuizController::class)->name('quiz.')->group(function() {
+        Route::get('/quiz-list', 'index')->name('quiz-list');
+        Route::post('/storeQuiz', 'storeQuiz')->name('storeQuiz');
+        Route::get('/quiz-questions/{id}', 'quizQuestionList')->name('quiz-question');
+        Route::get('/create-questions/{id}', 'createQuestion')->name('create-question');
+        Route::post('/storeQuizQuestion', 'storeQuizQuestion')->name('storeQuizQuestion');
+
+    });
 });
