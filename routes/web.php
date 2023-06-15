@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\HomePageController;
 use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Admin\SchoolYearController;
 use App\Http\Controllers\Admin\StudentClassController;
+use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\Teacher\AuthController as TeacherAuthController;
 
 /*
@@ -99,13 +100,15 @@ Route::middleware('guest')->group(function () {
     Route::view('/register', 'register')->name('register');
 
 
-    Route::view('/register', 'teacher.register')->name('teacher.register');
+    Route::view('/teacher/register', 'teacher.register')->name('teacher.register');
+    Route::get('/student/register', [StudentController::class, 'showRegForm'])->name('student.register');
 });
 
 /**
  * Teacher Registration Route
  */
 Route::post('/teacher/store', [TeacherController::class, 'storeTeacher'])->name('teacher.storeTeacher');
+Route::post('/student/store', [StudentController::class, 'storeStudent'])->name('student.store-student');
 
 
 /**
@@ -128,9 +131,30 @@ Route::prefix('teacher')->middleware('role:teacher')->group(function () {
     Route::controller(QuizController::class)->name('quiz.')->group(function() {
         Route::get('/quiz-list', 'index')->name('quiz-list');
         Route::post('/storeQuiz', 'storeQuiz')->name('storeQuiz');
-        Route::get('/quiz-questions/{id}', 'quizQuestionList')->name('quiz-question');
-        Route::get('/create-questions/{id}', 'createQuestion')->name('create-question');
-        Route::post('/storeQuizQuestion', 'storeQuizQuestion')->name('storeQuizQuestion');
+        Route::get('/quiz-questions/{id}', 'quizQuestionList')->name('quiz-question'); // show the quiz question list
+        // Route::get('/create-questions/{id}', 'createQuestion')->name('create-question');
+        // Route::post('/storeQuizQuestion', 'storeQuizQuestion')->name('storeQuizQuestion');
+        // Route::get('/', 'index')->name('index');
+        Route::post('/create-true-or-false-question/{id}', 'makeDynamicTrueOrFalseField')->name('store-true-or-false-quiz-number'); // make a dynamic field by submitting the desire number of questions
+        Route::post('/store-true-or-false-quiz-questions', 'storeTrueOrFalseQuizQuestions')->name('store-true-or-false-quiz-questions'); //store the true or false question in database
 
+        Route::post('/create-multiple-choice-question/{id}', 'makeDynamicMultipleChoiceField')->name('store-multiple-choice-quiz-number');
+        Route::post('/store-multiple-choice-question', 'storeMultipleChoiceQuestions')->name('store-multiple-choice-questions');
+
+        Route::post('/create-fill-in-the-blank-question/{id}', 'makeDynamicFillInTheBlankField')->name('store-fill-in-the-blank-quiz-number');
+        Route::post('/store-fill-in-the-blank-question', 'storeFillInTheBlankQuestions')->name('store-fill-in-the-blank-questions');
     });
 });
+
+
+/**
+ * Authenticated Student Route
+ */
+Route::prefix('student')->middleware('role:student')->group(function() {
+    Route::controller(StudentController::class)->name('student.')->group(function() {
+        Route::get('/dashboard', 'index')->name('dashboard');
+        Route::get('/class-enroll', 'showEnroll')->name('enroll');
+        Route::get('/my-classmate/{id}', 'showMyClassmate')->name('my-classmate');
+    });
+});
+

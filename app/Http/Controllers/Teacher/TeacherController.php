@@ -20,7 +20,9 @@ class TeacherController extends Controller
     {
         $classes = StudentClass::orderBy('year')->get();
         $subjects = Subject::all();
-        $ownClasses = TeacherOwnClass::where('teacher_id', Auth::id())->orderBy('created_at')->get();
+        $teacherId = Teacher::where('user_id', Auth::id())->value('id');
+
+        $ownClasses = TeacherOwnClass::where('teacher_id', $teacherId)->orderBy('created_at')->paginate(6);
         
         return view('teacher.index', compact('classes', 'subjects', 'ownClasses'));
     }
@@ -51,11 +53,14 @@ class TeacherController extends Controller
 
     public function storeClass(TeacherOwnClassValidationRequest $request)
     {
+        $teacherId = Teacher::where('user_id', Auth::id())->value('id');
+
         TeacherOwnClass::create([
-            'teacher_id' => Auth::id(),
+            'teacher_id' => $teacherId,
             'class_id' => $request->class_id,
             'subject_id' => $request->subject_id,
-            'unique_id' => Str::random(32)
+            'unique_id' => Str::random(32),
+            'student_limit' => $request->student_limit
         ]);
 
         return redirect()->route('teacher.dashboard')->with('message', 'Class created successfully');

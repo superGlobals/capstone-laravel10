@@ -13,13 +13,19 @@ class TeacherOwnClass extends Model
         'teacher_id',
         'class_id',
         'subject_id',
-        'unique_id'
+        'unique_id',
+        'student_limit'
     ];
 
     public function teacher()
     {
         return $this->belongsTo(Teacher::class);
     }
+
+    // public function user()
+    // {
+    //     return $this->belongsTo(Teacher::class);
+    // }
 
     public function class()
     {

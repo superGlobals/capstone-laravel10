@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="row">
                         @forelse ($ownClasses as $ownClass)
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <a href="{{ route('teacher.my-students', $ownClass->unique_id) }}">
                                     <div class="card shadow">
                                         <div class="card-header bg-primary">
@@ -41,6 +41,7 @@
                             <h3 class="text-center">No Class Found</h3>
                         @endforelse
                     </div>
+                    {{ $ownClasses->links() }}
                 </div>
             </div>
         </div>
@@ -54,7 +55,7 @@
                         @csrf
                         <div class="mb-3">
                             <label for="" class="form-label">Class Name</label>
-                            <select name="class_id" id="course-select" class="form-select">
+                            <select name="class_id" id="course-select" class="form-select" required>
                                 <option value="">Select Class</option>
                                 @foreach ($classes as $class)
                                     <option value="{{ $class->id }}">
@@ -67,7 +68,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">Subject</label>
-                            <select name="subject_id" id="subject-select" class="form-select">
+                            <select name="subject_id" id="subject-select" class="form-select" required>
                                 <option value="">Select Subject</option>
                                 @foreach ($subjects as $subject)
                                     <option value="{{ $subject->id }}">
@@ -76,6 +77,13 @@
                                 @endforeach
                             </select>
                             @error('subject_id')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Student Limit</label>
+                            <input type="number" class="form-control" name="student_limit" placeholder="Maximum number of students that can enroll" required>
+                            @error('student_limit')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>

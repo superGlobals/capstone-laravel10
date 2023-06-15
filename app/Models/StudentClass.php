@@ -14,4 +14,9 @@ class StudentClass extends Model
         'year',
         'section'
     ];
+
+    public function teacherOwnClass()
+    {
+        return $this->hasMany(TeacherOwnClass::class);
+    }
 }

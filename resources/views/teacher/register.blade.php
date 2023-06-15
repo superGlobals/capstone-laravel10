@@ -43,7 +43,7 @@
                     <div class="col-12">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" class="form-control" id="password"
-                            placeholder="Choose a strong password">
+                            placeholder="Choose a strong password" value="{{ old('password') }}">
                         @error('password')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror

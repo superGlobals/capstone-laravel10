@@ -56,7 +56,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="mb-3">
-                            <a href="" class="btn btn-warning" style="width: 100%; padding: 10px">I'm a Student</a>
+                            <a href="{{ route('student.register') }}" class="btn btn-warning" style="width: 100%; padding: 10px">I'm a Student</a>
                         </div>
                         <div class="mb-3">
                             <a href="{{ route('teacher.register') }}" class="btn btn-primary" style="width: 100%; padding: 10px">I'm a Teacher</a>
