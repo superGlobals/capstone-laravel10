@@ -155,6 +155,7 @@ Route::prefix('student')->middleware('role:student')->group(function() {
         Route::get('/dashboard', 'index')->name('dashboard');
         Route::get('/class-enroll', 'showEnroll')->name('enroll');
         Route::get('/my-classmate/{id}', 'showMyClassmate')->name('my-classmate');
+        Route::post('/enroll-to-this-class/{class}','enrollToThisClass')->name('enroll-to-class');
     });
 });
 

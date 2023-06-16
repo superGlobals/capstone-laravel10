@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\StudentClass;
 use Illuminate\Http\Request;
 use App\Models\TeacherOwnClass;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\TeacherValidationRequest;
@@ -70,6 +71,16 @@ class TeacherController extends Controller
     {
         $teacherClass = TeacherOwnClass::where('unique_id', $unique_id)->firstOrFail();
 
-        return view('teacher.my-students.index', compact('teacherClass'));
+        $myStudents = DB::table('teacher_class_students')
+                        ->join('teacher_own_classes', 'teacher_class_students.teacher_own_class_id', '=', 'teacher_own_classes.id')
+                        ->join('teachers', 'teacher_class_students.teacher_id', '=', 'teachers.id')
+                        ->join('students', 'teacher_class_students.student_id', '=', 'students.id')
+                        ->join('users AS user_teacher', 'teachers.user_id', '=', 'user_teacher.id')
+                        ->join('users AS user_student', 'students.user_id', '=', 'user_student.id')
+                        ->where('teacher_class_students.teacher_own_class_id', 'teacher_own_classes.id')
+                        ->select('students.id AS student_id', 'user_student.name AS student_name')
+                        ->get();
+
+        return view('teacher.my-students.index', compact('teacherClass', 'myStudents'));
     }
 }

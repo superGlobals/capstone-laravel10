@@ -15,7 +15,7 @@
             <div class="card shadow border-0">
                 <div class="card-header border-0">
                     <a href="{{ route('student.dashboard') }}" class="btn btn-primary float-end">Back</a>
-                    <h4 class="fw-bold text-black fs-5">Available class base on your course</h4>
+                    <h4 class="fw-bold text-black fs-5">Available class base on your course </h4>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -24,6 +24,7 @@
                                 <a href="{{ route('student.my-classmate', $class->id) }}">
                                     <div class="card shadow">
                                         <div class="card-header bg-primary p-0 px-2">
+                                            <h1>{{ $class->id }}</h1>
                                             <h6 class="text-white mt-2 fw-bold">Professor: {{ ucwords($class->teacher->user->name) }}</h6>
                                         </div>
                                         <div class="card-body text-center p-4">

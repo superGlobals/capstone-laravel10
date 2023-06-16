@@ -19,7 +19,20 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        
+                        @forelse ($myStudents as $myStudent)
+                            <div class="col-md-2">
+                                <div class="card border-0">
+                                    <div class="card-header p-2" style="">
+                                        <img src="{{ asset('images/default.jpg') }}" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="card-body p-0 text-center">
+                                        <p class="fw-bold mt-1">{{ $myStudent->student_name }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                        <h3 class="text-center">No Student Found</h3>
+                        @endforelse
                     </div>
                 </div>
             </div>
