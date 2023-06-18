@@ -7,10 +7,12 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Teacher\QuizController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\HomePageController;
+use App\Http\Controllers\Student\ProfileController;
+use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Admin\SchoolYearController;
 use App\Http\Controllers\Admin\StudentClassController;
-use App\Http\Controllers\Student\StudentController;
+use App\Http\Controllers\Student\EnrollmentController;
 use App\Http\Controllers\Teacher\AuthController as TeacherAuthController;
 
 /*
@@ -125,7 +127,7 @@ Route::prefix('teacher')->middleware('role:teacher')->group(function () {
     Route::controller(TeacherController::class)->name('teacher.')->group(function () {
         Route::get('/dashboard', 'index')->name('dashboard');
         Route::post('/store-class', 'storeClass')->name('storeClass');
-        Route::get('/my-students/{unique_id}', 'showMyStudents')->name('my-students');
+        Route::get('/my-students/{id}', 'showMyStudents')->name('my-students');
     });
 
     Route::controller(QuizController::class)->name('quiz.')->group(function() {
@@ -150,12 +152,21 @@ Route::prefix('teacher')->middleware('role:teacher')->group(function () {
 /**
  * Authenticated Student Route
  */
-Route::prefix('student')->middleware('role:student')->group(function() {
-    Route::controller(StudentController::class)->name('student.')->group(function() {
+Route::prefix('student')->middleware('role:student')->name('student.')->group(function() {
+    Route::controller(StudentController::class)->group(function() {
         Route::get('/dashboard', 'index')->name('dashboard');
-        Route::get('/class-enroll', 'showEnroll')->name('enroll');
         Route::get('/my-classmate/{id}', 'showMyClassmate')->name('my-classmate');
+    });
+
+    Route::controller(EnrollmentController::class)->group(function() {
+        Route::get('/class-enroll', 'showEnroll')->name('enroll');
         Route::post('/enroll-to-this-class/{class}','enrollToThisClass')->name('enroll-to-class');
     });
+
+    Route::controller(ProfileController::class)->group(function() {
+        Route::get('/profile', 'myProfile')->name('profile');
+        Route::post('/upload-profile/{student}', 'uploadProfile')->name('upload-profile');
+    });
+
 });
 

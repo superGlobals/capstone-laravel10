@@ -20,7 +20,7 @@
                     <div class="row">
                         @forelse ($ownClasses as $ownClass)
                             <div class="col-md-6">
-                                <a href="{{ route('teacher.my-students', $ownClass->unique_id) }}">
+                                <a href="{{ route('teacher.my-students', $ownClass->id) }}">
                                     <div class="card shadow">
                                         <div class="card-header bg-primary">
 

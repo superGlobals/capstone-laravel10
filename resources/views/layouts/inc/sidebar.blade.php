@@ -138,6 +138,13 @@
             </a>
         </li><!-- End Dashboard Nav -->
 
+        <li class="nav-item">
+            <a class="nav-link " href="{{ route('student.profile') }}">
+                <i class="bi bi-grid"></i>
+                <span>My Profile</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
     </ul>
     @endif
 

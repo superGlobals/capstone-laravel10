@@ -20,13 +20,13 @@
                 <div class="card-body">
                     <div class="row">
                         @forelse ($myStudents as $myStudent)
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="card border-0">
                                     <div class="card-header p-2" style="">
-                                        <img src="{{ asset('images/default.jpg') }}" class="img-fluid" alt="">
+                                        <img src="{{ asset('images/default.jpg') }}" class="img-fluid rounded-circle" alt="">
                                     </div>
                                     <div class="card-body p-0 text-center">
-                                        <p class="fw-bold mt-1">{{ $myStudent->student_name }}</p>
+                                        <p class="fw-bold mt-1">{{ ucwords($myStudent->student_name) }}</p>
                                     </div>
                                 </div>
                             </div>

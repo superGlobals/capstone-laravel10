@@ -67,9 +67,9 @@ class TeacherController extends Controller
         return redirect()->route('teacher.dashboard')->with('message', 'Class created successfully');
     }
 
-    public function showMyStudents($unique_id)
+    public function showMyStudents($id)
     {
-        $teacherClass = TeacherOwnClass::where('unique_id', $unique_id)->firstOrFail();
+        $teacherClass = TeacherOwnClass::where('id', $id)->firstOrFail();
 
         $myStudents = DB::table('teacher_class_students')
                         ->join('teacher_own_classes', 'teacher_class_students.teacher_own_class_id', '=', 'teacher_own_classes.id')
@@ -77,7 +77,8 @@ class TeacherController extends Controller
                         ->join('students', 'teacher_class_students.student_id', '=', 'students.id')
                         ->join('users AS user_teacher', 'teachers.user_id', '=', 'user_teacher.id')
                         ->join('users AS user_student', 'students.user_id', '=', 'user_student.id')
-                        ->where('teacher_class_students.teacher_own_class_id', 'teacher_own_classes.id')
+                        ->where('teacher_own_class_id', $id)
+                        ->orderBy('user_student.name', 'ASC')
                         ->select('students.id AS student_id', 'user_student.name AS student_name')
                         ->get();
 
